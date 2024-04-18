@@ -1,0 +1,30 @@
+---
+title: "Project_1_Data_Cleaning"
+author: "Eva and Lana"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(here)
+
+df_911 <- read.csv(here("Data", "Seattle_small_911.csv"))
+ 
+df_911 |>
+  group_by(Type)|>
+  summarise(count = n()) |>
+  arrange(desc(count))
+```
+
+```{r}
+clean_911 <- df_911 |>
+  mutate(Datetime = mdy_hms(Datetime),
+         Year = year(Datetime))
+```
+
+```{r}
+difftime(clean_911$Datetime[1], clean_911$Datetime[2])
+```
+
+
