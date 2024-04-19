@@ -20,11 +20,13 @@ df_911 |>
 ```{r}
 clean_911 <- df_911 |>
   mutate(Datetime = mdy_hms(Datetime),
-         Year = year(Datetime))
+         Year = year(Datetime),
+         Month = months(Datetime)) |>
+  filter(Year == 2023)
 ```
+
+
 
 ```{r}
 difftime(clean_911$Datetime[1], clean_911$Datetime[2])
 ```
-
-
