@@ -4,6 +4,7 @@
 # Source for line break in popup: https://blog.hubspot.com/website/html-line-break#:~:text=To%20do%20a%20line%20break%20in%20HTML%2C%20use%20the%20%3Cbr,element%2C%20there's%20no%20closing%20tag.
 # Used ChatGPT to set up formating of shiny app, this includes adding the filters and the time series plot
 # Source for theme/shiny app formating: https://rstudio.github.io/bslib/reference/sidebar.html
+# Source for ui theme for shiny apps: https://www.youtube.com/watch?v=O6WLERr5bKU
 
 library(shiny)
 library(leaflet)
@@ -54,6 +55,7 @@ ui <- page_sidebar(
   
   title = "2023 Accidents in Seattle",
   
+  # side bar that has the type and month filters
   sidebar = list(
     selectInput("type_filter", "Select Type of Accident:",
                 choices = c("All", types)),
@@ -61,16 +63,21 @@ ui <- page_sidebar(
                 choices = c("All", as.character(months)))
     ),
   layout_columns(
+    
+    # Map of 911 accidents card
     card(card_header("Map of 911 Accidents in Seattle"),
-         leafletOutput('mymap')),
+         leafletOutput("mymap")),
     
+    # time series plot card
     card(card_header("Number of Accidents per Day Over Time"),
-         plotOutput('time_series_plot')),
+         plotOutput("time_series_plot")),
     
+    # value box with average number of accidents per day
     value_box(title = "Average Number of Accidents per Day",
               textOutput("average_accidents"),
               showcase = bs_icon("person-fill-exclamation")),
     
+    # width of columns for cards and value box
     col_widths = c(12, 9, 3)
   )
 )
