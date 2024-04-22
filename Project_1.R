@@ -8,13 +8,15 @@ library(shiny)
 library(leaflet)
 library(tidyverse)
 library(here)
+library(bslib)
+library(bsicons)
 
 # Dataset and cleaning the dataset
 df_911 <- read.csv(here("Data", "Seattle_small_911.csv"))
 
 clean_911 <- df_911 |>
   mutate(
-    Datetime = mdy_hms(Datetime),
+    Datetime = as.Date(mdy_hms(Datetime)),
     Year = year(Datetime),
     Month = factor(months(Datetime), levels = month.name),
     pop = paste("Incident Number:",
@@ -42,60 +44,34 @@ types <- unique(clean_911$Type)
 
 months <- levels(clean_911$Month)
 
-ui <- fluidPage(
 
-  # Title of shiny app
-  titlePanel("2023 Accidents in Seattle"),
-
-  # Formatting for page
-  tags$head(
-    tags$style(HTML("
-      .map-container {
-        position: relative;
-        height: 600px;
-        width: 900px;
-      }
-      .filter-bar {
-        position: absolute;
-        top: 10px;
-        right: 20px;
-        z-index: 1000;
-        background-color: white;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-      }
-      .plot-container {
-        position: absolute;
-        top: 400px;
-        height: 400px;
-        width: 900px;
-      }
-    "))
-  ),
-
-  # Map and time series plot
-  fluidRow(
-    column(width = 8,
-           div(class = "map-container",
-               leafletOutput("mymap")
-           ),
-           div(class = "plot-container",
-               plotOutput("time_series_plot")
-           )
+ui <- page_sidebar(
+  
+  theme = bs_theme(bootswatch = "sandstone"),
+  
+  title = "2023 Accidents in Seattle",
+  
+  sidebar = list(
+    selectInput("type_filter", "Select Type of Accident:",
+                choices = c("All", types)),
+    selectInput("month_filter", "Select Month of Accident:",
+                choices = c("All", as.character(months)))
     ),
-
-    # Type and month filters
-    column(width = 4,
-           div(class = "filter-bar",
-               selectInput("type_filter", "Select Type of Accident:",
-                           choices = c("All", types)),
-               selectInput("month_filter", "Select Month of Accident:",
-                           choices = c("All", as.character(months)))
-           )
-    )
+  layout_columns(
+    card(card_header("Map of 911 Accidents in Seattle"),
+         leafletOutput('mymap')),
+    
+    card(card_header("Number of Accidents per Day Over Time"),
+         plotOutput('time_series_plot')),
+    
+    value_box(title = "Average Number of Accidents per Day",
+              textOutput("average_accidents"),
+              showcase = bs_icon("person-fill-exclamation")),
+    
+    col_widths = c(12, 9, 3)
   )
 )
+
 
 server <- function(input, output) {
 
@@ -134,11 +110,22 @@ server <- function(input, output) {
       geom_line(aes(x = Datetime, y = ..count..),
                 stat = "count",
                 color = "navy") +
-      labs(x = "Date",
-           y = " ",
-           title = "Number of Accidents per Day Over Time") +
+      labs(x = " ",
+           y = " ") +
       theme_bw()
   })
+  
+  # Calculate average number of accidents
+  output$average_accidents <- renderText({
+    data <- filtered_data()
+    total_accidents <- nrow(data)
+    start_date <- min(data$Datetime)
+    end_date <- max(data$Datetime)
+    total_days <- as.numeric(difftime(end_date, start_date, units = "days"))
+    average_accidents <- total_accidents / total_days
+    round(average_accidents)
+  })
+  
 }
 
 shinyApp(ui, server)
