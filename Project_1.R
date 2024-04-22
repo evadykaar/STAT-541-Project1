@@ -8,13 +8,14 @@ library(shiny)
 library(leaflet)
 library(tidyverse)
 library(here)
+library(bslib)
 
 # Dataset and cleaning the dataset
 df_911 <- read.csv(here("Data", "Seattle_small_911.csv"))
 
 clean_911 <- df_911 |>
   mutate(
-    Datetime = mdy_hms(Datetime),
+    Datetime = as.Date(mdy_hms(Datetime)),
     Year = year(Datetime),
     Month = factor(months(Datetime), levels = month.name),
     pop = paste("Incident Number:",
@@ -43,6 +44,8 @@ types <- unique(clean_911$Type)
 months <- levels(clean_911$Month)
 
 ui <- fluidPage(
+  
+  theme = bs_theme(bootswatch = 'journal'),
 
   # Title of shiny app
   titlePanel("2023 Accidents in Seattle"),
