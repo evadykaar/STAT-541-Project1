@@ -53,7 +53,7 @@ ui <- page_sidebar(
                    base_font = "Helvetica now",
                    heading_font = "Helvetica now"),
   
-  title = "2023 Accidents in Seattle",
+  title = "2023 911 Accident Calls in Seattle",
   
   # side bar that has the type and month filters
   sidebar = list(
