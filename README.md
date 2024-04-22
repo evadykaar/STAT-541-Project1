@@ -1,6 +1,9 @@
 **Overview of Our Dataset**
-- Our dataset is of 911 Calls from Seattle Washington and this is our data source: https://data.seattle.gov/Public-Safety/Seattle-Real-Time-Fire-911-Calls/kzjm-xkqj/about_data
-- This dataset was created January 8th, 2010, and is still being updated, however, our data is not continuously updating since it was initially downloaded.
+- https://data.seattle.gov/Public-Safety/Seattle-Real-Time-Fire-911-Calls/kzjm-xkqj/about_data
+- Our dataset is of 911 Calls from Seattle Washington
+- This dataset was created January 8th, 2010, and is still being updated (every 5 minutes), however, our data is not continuously updating since it was initially downloaded.
+- 1.92 million rows, 7 columns
+- The variables in this data include location of incident, response type, date/time of call, latitude, longitude, report location, and incident number.
 
 **Data Cleaning**
 - The original file was about almost 2 million rows long, so we wanted to condense the dataset.
