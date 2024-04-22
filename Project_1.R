@@ -3,6 +3,7 @@
 # Source for sorting months in order: https://groups.google.com/g/manipulatr/c/RPMFm--cDt8
 # Source for line break in popup: https://blog.hubspot.com/website/html-line-break#:~:text=To%20do%20a%20line%20break%20in%20HTML%2C%20use%20the%20%3Cbr,element%2C%20there's%20no%20closing%20tag.
 # Used ChatGPT to set up formating of shiny app, this includes adding the filters and the time series plot
+# Source for theme/shiny app formating: https://rstudio.github.io/bslib/reference/sidebar.html
 
 library(shiny)
 library(leaflet)
@@ -47,7 +48,9 @@ months <- levels(clean_911$Month)
 
 ui <- page_sidebar(
   
-  theme = bs_theme(bootswatch = "sandstone"),
+  theme = bs_theme(bootswatch = "sandstone", 
+                   base_font = "Helvetica now",
+                   heading_font = "Helvetica now"),
   
   title = "2023 Accidents in Seattle",
   
@@ -90,8 +93,6 @@ server <- function(input, output) {
     return(data)
   })
 
-
-
   # Map
   output$mymap <- renderLeaflet({
     leaflet() |>
@@ -115,7 +116,7 @@ server <- function(input, output) {
       theme_bw()
   })
   
-  # Calculate average number of accidents
+  # Calculate average number of accidents for value box
   output$average_accidents <- renderText({
     data <- filtered_data()
     total_accidents <- nrow(data)
